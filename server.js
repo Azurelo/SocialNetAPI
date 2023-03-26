@@ -1,6 +1,6 @@
 const express = require('express');
-const db = require('.config/connection');
-const {User, Reaction, Thought} = require('./models');
+const db = require('./config/connection');
+const routes = require("./routes")
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -9,8 +9,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 
 //Routes
-
-//app.get
+app.use(routes);
 
 //Start App
 db.once('open', () => {
