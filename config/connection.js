@@ -1,10 +1,15 @@
-const { connect, connection} = require('mongoose');
+const mongoose = require('mongoose');
 
-//Mongoose wrapping around my local MongoDB
-connect('mongodb://127.0.0.1:27017/socialnetworkDB', {
-    useNewParser:true,
-    useUnifiedTopology:true,
+const uri = 'mongodb://localhost:27017/socialnet';
+
+const connection = mongoose.createConnection(uri);
+
+connection.on('error', (err) => {
+  console.error('MongoDB error', err);
+});
+
+connection.once('open', () => {
+  console.log('MongoDB connection established successfully');
 });
 
 module.exports = connection;
-
