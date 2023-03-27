@@ -19,7 +19,7 @@ const thoughtController = {
 
   // GET a single thought by id
   getThoughtById({ params }, res) {
-    Thought.findOne({ _id: params.id })
+    Thought.findOne({ _id: params.thoughtId })
       .populate({
         path: 'reactions',
         select: '-__v'
@@ -40,11 +40,11 @@ const thoughtController = {
   },
 
   // CREATE a new thought and add to user's thoughts array
-  addThought({ params, body }, res) {
+  addThought({body}, res) {
     Thought.create(body)
       .then(({ _id }) => {
         return User.findOneAndUpdate(
-          { _id: params.userId },
+          { _id: body.userId },
           { $push: { thoughts: _id } },
           { new: true }
         );
@@ -62,7 +62,7 @@ const thoughtController = {
 
   // UPDATE a thought by id
   updateThought({ params, body }, res) {
-    Thought.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
+    Thought.findOneAndUpdate({ _id: params.thoughtId }, body, { new: true, runValidators: true })
       .then(dbThoughtData => {
         // If no thought is found, send 404
         if (!dbThoughtData) {
@@ -76,7 +76,7 @@ const thoughtController = {
 
   // DELETE a thought by id
   deleteThought({ params }, res) {
-    Thought.findOneAndDelete({ _id: params.id })
+    Thought.findOneAndDelete({ _id: params.thoughtId })
       .then(dbThoughtData => {
         // If no thought is found, send 404
         if (!dbThoughtData) {
@@ -91,7 +91,9 @@ const thoughtController = {
         );
       })
       .then(dbUserData => {
+        
         res.json(dbUserData);
+        res.json({ message: 'Successfully Deleted!' });
       })
       .catch(err => res.status(400).json(err));
   },
@@ -133,7 +135,7 @@ const thoughtController = {
           return;
         }
 
-        res.json(dbThoughtData);
+        res.json({ message: 'Successfully Deleted!' });
       })
       .catch((err) => res.json(err));
   }

@@ -1,6 +1,4 @@
-const mongoose = require('mongoose');
-const {Schema} = mongoose;
-
+const {Schema, model} = require('mongoose');
 const reactionSchema = new Schema(
     {
       reactionId: {
@@ -19,7 +17,7 @@ const reactionSchema = new Schema(
       createdAt: {
         type: Date,
         default: Date.now,
-        get: createdAtVal => dateFormat(createdAtVal)
+        get: currentTime => Date.now
       }
     }
   );
@@ -32,7 +30,7 @@ const thoughtSchema = new Schema({
     createdAt: {
       type: Date,
       default: Date.now,
-      get: timestamp => dateFormat(timestamp)
+      get: currentTime => Date.now
     },
     username: {
       type: String,
@@ -52,6 +50,6 @@ const thoughtSchema = new Schema({
     return this.reactions.length;
   });
   
-  const Thought = mongoose.model('Thought', thoughtSchema);
+  const Thought = model('Thought', thoughtSchema);
 
   module.exports = Thought;
