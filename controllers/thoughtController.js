@@ -80,7 +80,9 @@ const thoughtController = {
       .then(dbThoughtData => {
         // If no thought is found, send 404
         if (!dbThoughtData) {
-          res.status(404).json({ message: 'No thought found with this id!' });
+          if (!res.headersSent) {
+            res.status(404).json({ message: 'No thought found with this id!' });
+          }
           return;
         }
         // Remove the thought id from the associated user's thoughts array
@@ -90,13 +92,19 @@ const thoughtController = {
           { new: true }
         );
       })
-      .then(dbUserData => {
-        
-        res.json(dbUserData);
-        res.json({ message: 'Successfully Deleted!' });
+      .then(() => {
+        if (!res.headersSent) {
+          res.json({ message: 'Thought deleted!' });
+        }
       })
-      .catch(err => res.status(400).json(err));
+      .catch(err => {
+        if (!res.headersSent) {
+          res.status(400).json(err);
+        }
+      });
   },
+  
+  
 
   // CREATE a new reaction for a thought
   addReaction(req, res) {
@@ -122,23 +130,25 @@ const thoughtController = {
 
   // remove reaction from thought
   removeReaction(req, res) {
-    const { reactionId } = req.params;
+  const { thoughtId, reactionId } = req.params;
 
-    Thought.findOneAndUpdate(
-      { reactions: { $elemMatch: { _id: reactionId } } },
-      { $pull: { reactions: { _id: reactionId } } },
-      { new: true }
-    )
-      .then((dbThoughtData) => {
-        if (!dbThoughtData) {
-          res.status(404).json({ message: 'No thought found with this id!' });
-          return;
-        }
+  Thought.findOneAndUpdate(
+    { _id: thoughtId },
+    { $pull: { reactions: { _id: reactionId } } },
+    { new: true }
+  )
+    .then((dbThoughtData) => {
+      if (!dbThoughtData) {
+        return res.status(404).json({ message: 'No reaction found with this id!' });
+      }
 
-        res.json({ message: 'Successfully Deleted!' });
-      })
-      .catch((err) => res.json(err));
-  }
+      res.json({ message: 'Reaction successfully deleted!' });
+    })
+    .catch((err) => res.status(400).json(err));
+}
+
+  
+  
 };
 
 module.exports = thoughtController;
