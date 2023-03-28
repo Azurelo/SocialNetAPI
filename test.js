@@ -25,7 +25,6 @@ const userSchema = new mongoose.Schema({
 // Create the user model
 const User = mongoose.model('User', userSchema);
 
-// Define the test function
 async function test() {
   // Connect to the database
   await mongoose.connect('mongodb://localhost/socialnetDB', { useNewUrlParser: true });
@@ -45,7 +44,7 @@ async function test() {
   const foundUser = await User.findOne({ username: 'food' });
 
   // Log the user to the console
-  console.log('Found user:', foundUser);
+  console.log('Found a user:', foundUser);
 
   // Disconnect from the database
   await mongoose.disconnect();

@@ -50,9 +50,8 @@ const thoughtController = {
         );
       })
       .then(dbUserData => {
-        // If no user is found, send 404
         if (!dbUserData) {
-          res.status(404).json({ message: 'No user found with this id!' });
+          res.status(404).json({ message: 'No user found with that id!' });
           return;
         }
         res.json(dbUserData);
@@ -66,7 +65,7 @@ const thoughtController = {
       .then(dbThoughtData => {
         // If no thought is found, send 404
         if (!dbThoughtData) {
-          res.status(404).json({ message: 'No thought found with this id!' });
+          res.status(404).json({ message: 'No thought found with given id!' });
           return;
         }
         res.json(dbThoughtData);
@@ -94,7 +93,7 @@ const thoughtController = {
       })
       .then(() => {
         if (!res.headersSent) {
-          res.json({ message: 'Thought deleted!' });
+          res.json({ message: 'Thought removed!' });
         }
       })
       .catch(err => {
@@ -119,7 +118,7 @@ const thoughtController = {
     )
       .then((dbThoughtData) => {
         if (!dbThoughtData) {
-          res.status(404).json({ message: 'No thought found with this id!' });
+          res.status(404).json({ message: 'No thought with given id!' });
           return;
         }
 
@@ -129,7 +128,7 @@ const thoughtController = {
   },
 
   // remove reaction from thought
-  removeReaction(req, res) {
+  deleteReactions(req, res) {
   const { thoughtId, reactionId } = req.params;
 
   Thought.findOneAndUpdate(
@@ -139,7 +138,7 @@ const thoughtController = {
   )
     .then((dbThoughtData) => {
       if (!dbThoughtData) {
-        return res.status(404).json({ message: 'No reaction found with this id!' });
+        return res.status(404).json({ message: 'No reaction with that id!' });
       }
 
       res.json({ message: 'Reaction successfully deleted!' });
